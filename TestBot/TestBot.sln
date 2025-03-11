@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBot", "TestBot\TestBot.csproj", "{FFB95DAA-65AC-44BD-AAB8-7F09598EAAFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatBotDal", "ChatBotDal\ChatBotDal.csproj", "{EF4F34C9-A8A2-45BC-A0B3-8B87CDDD5C3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatBotBll", "ChatBotBll\ChatBotBll.csproj", "{F7A36DD3-8EA0-4411-B8C8-4A489A99A280}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FFB95DAA-65AC-44BD-AAB8-7F09598EAAFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFB95DAA-65AC-44BD-AAB8-7F09598EAAFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFB95DAA-65AC-44BD-AAB8-7F09598EAAFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFB95DAA-65AC-44BD-AAB8-7F09598EAAFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF4F34C9-A8A2-45BC-A0B3-8B87CDDD5C3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF4F34C9-A8A2-45BC-A0B3-8B87CDDD5C3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF4F34C9-A8A2-45BC-A0B3-8B87CDDD5C3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF4F34C9-A8A2-45BC-A0B3-8B87CDDD5C3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7A36DD3-8EA0-4411-B8C8-4A489A99A280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7A36DD3-8EA0-4411-B8C8-4A489A99A280}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7A36DD3-8EA0-4411-B8C8-4A489A99A280}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7A36DD3-8EA0-4411-B8C8-4A489A99A280}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B7B55D3B-D0F0-4E0E-B4DA-20DFDF6B39E7}
+	EndGlobalSection
+EndGlobal
