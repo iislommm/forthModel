@@ -57,8 +57,6 @@ namespace ChatBot.Api
         }
         public static async Task SaveUserId()
         {
-
-           
             var serializedIds = JsonSerializer.Serialize(Ids);
             await File.WriteAllTextAsync(FilePath, serializedIds);
         }

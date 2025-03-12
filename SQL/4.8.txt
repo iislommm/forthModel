@@ -1,0 +1,353 @@
+Data types
+
+int		INT			32-bit integer.
+long		BIGINT			64-bit integer.
+short		SMALLINT		16-bit integer.
+byte		TINYINT			8-bit integer (0 to 255).
+float		REAL			Single-precision floating-point number.
+double		FLOAT			Double-precision floating-point number.
+decimal		DECIMAL(p, s)		Fixed-point number with precision (p) and scale (s).
+bool		BIT			Boolean value (0, 1, or NULL).
+string		VARCHAR(n)		Variable-length string (non-Unicode, up to 8,000 characters).
+string		NVARCHAR(n)		Variable-length Unicode string (up to 8,000 characters).
+string		VARCHAR(MAX)		Large variable-length string (non-Unicode, up to 2GB).
+string		NVARCHAR(MAX)		Large variable-length Unicode string (up to 2GB).
+char		CHAR(n)			Fixed-length string (non-Unicode, up to 8,000 characters).
+char		NCHAR(n)		Fixed-length Unicode string (up to 8,000 characters).
+DateTime	DATE			Date only (no time).
+DateTime	DATETIME		Date and time (up to milliseconds).
+DateTime	DATETIME2		Date and time with higher precision (up to nanoseconds).
+DateTime	SMALLDATETIME		Date and time (up to minutes).
+DateTime	DATETIMEOFFSET		Date and time with time zone information.
+TimeSpan	TIME			Time only (no date).
+byte[]		VARBINARY(n)		Variable-length binary data (up to 8,000 bytes).
+byte[]		VARBINARY(MAX)		Large variable-length binary data (up to 2GB).
+Guid		UNIQUEIDENTIFIER	Globally unique identifier (GUID).
+
+
+----------------------------------------------------------------------------------
+
+
+PRIMARY KEY	Ensures that each row in a table has a unique and non-null identifier. A table can have only one primary key.
+
+FOREIGN KEY	Enforces a link between two tables by ensuring that the value in one table exists in another (parent table). Helps maintain referential integrity.
+
+UNIQUE	        Ensures that all values in a column are unique (but allows NULL, unless NOT NULL is specified).
+
+CHECK	        Restricts the values that can be inserted into a column based on a condition.
+
+NOT NULL	Ensures that a column cannot store NULL values.
+
+DEFAULT	        Assigns a default value to a column when no value is provided.
+
+IDENTITY	Auto-increments the value in a column (usually used with PRIMARY KEY).
+
+INDEX	        Improves the performance of queries by creating a structured lookup for data. (Not exactly a constraint, but often used with constraints.)
+
+
+
+CREATE TABLE Users (
+    UserID INT IDENTITY(1,1) PRIMARY KEY,  -- Auto-incrementing primary key
+    Username NVARCHAR(50) UNIQUE NOT NULL, -- Unique and required
+    Email NVARCHAR(100) UNIQUE NOT NULL,   -- Unique email
+    Age INT CHECK (Age >= 18),             -- Must be 18 or older
+    Country NVARCHAR(50) DEFAULT 'USA'     -- Default value if none provided
+);
+
+
+
+
+INSERT INTO Users (Username, Email, Age, Country, Lastname)  
+VALUES  
+('john_doe', 'john@example.com', 25, 'USA', 'Doe'),  
+('alice_smith', 'alice@example.com', 30, 'UK', 'Smith'),  
+('bekzod_92', 'bekzod@example.com', 22, DEFAULT, 'Abdullaev'),  
+('sara_k', 'sara@example.com', 28, 'CAN', 'Karimova');  
+
+
+----------------------------------------------------------------------------------
+
+
+
+
+public class Employee
+{
+    public int EmployeeID { get; set; }          // INT
+    public string FirstName { get; set; }        // NVARCHAR(50)
+    public string LastName { get; set; }         // NVARCHAR(50)
+    public DateTime BirthDate { get; set; }      // DATE
+    public decimal Salary { get; set; }          // DECIMAL(10, 2)
+    public bool IsActive { get; set; }           // BIT
+    public byte[] ProfilePicture { get; set; }   // VARBINARY(MAX)
+    public DateTime HireDate { get; set; }       // DATETIME
+    public Guid EmployeeGuid { get; set; }       // UNIQUEIDENTIFIER
+}
+
+CREATE TABLE Employees (
+    EmployeeID INT PRIMARY KEY,
+    FirstName NVARCHAR(50) NOT NULL,
+    LastName NVARCHAR(50) NOT NULL,
+    BirthDate DATE,
+    Salary DECIMAL(10, 2),
+    IsActive BIT,
+    ProfilePicture VARBINARY(MAX),
+    HireDate DATETIME,
+    EmployeeGuid UNIQUEIDENTIFIER
+);
+
+
+
+
+------------------------------------------------------------------------
+
+1.
+-- Create Customers Table
+CREATE TABLE Customers (
+    CustomerID INT IDENTITY(1,1) PRIMARY KEY,  -- Auto-increment & Primary Key
+    FullName NVARCHAR(100) NOT NULL,           -- Required
+    Email NVARCHAR(255) UNIQUE NOT NULL,       -- Unique & Required
+    Phone VARCHAR(15) UNIQUE,                  -- Unique
+    CreatedAt DATETIME DEFAULT GETDATE()       -- Default to current timestamp
+);
+
+-- Create Orders Table (with Foreign Key)
+CREATE TABLE Orders (
+    OrderID INT IDENTITY(1,1) PRIMARY KEY,  -- Auto-increment & Primary Key
+    CustomerID INT NOT NULL,                -- Foreign Key (Must be an existing CustomerID)
+    TotalAmount DECIMAL(10,2) CHECK (TotalAmount > 0), -- Must be positive
+    OrderDate DATETIME DEFAULT GETDATE(),   -- Default to current timestamp
+    
+    -- Define Foreign Key Constraint
+    CONSTRAINT FK_Orders_Customers FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) ON DELETE CASCADE
+);
+
+
+
+
+2.
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,  
+    CustomerID INT NOT NULL REFERENCES Customers(CustomerID) ON DELETE CASCADE
+);
+
+
+-------------------------------------------------------------------------------------
+
+
+Relation ships
+
+CREATE TABLE Person (
+    PersonID INT PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Address (
+    AddressID INT PRIMARY KEY,
+    PersonID INT UNIQUE, -- Ensures one-to-one relationship
+    Street NVARCHAR(255) NOT NULL,
+    City NVARCHAR(100) NOT NULL,
+
+    CONSTRAINT FK_Address_Person FOREIGN KEY (PersonID) REFERENCES Person(PersonID) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE Car (
+    CarID INT PRIMARY KEY,
+    PersonID INT NOT NULL,
+    Model NVARCHAR(100) NOT NULL,
+
+    CONSTRAINT FK_Car_Person FOREIGN KEY (PersonID) REFERENCES Person(PersonID) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Teacher (
+    TeacherID INT PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL
+);
+
+CREATE TABLE StudentTeacher (  
+    StudentID INT NOT NULL,  
+    TeacherID INT NOT NULL,  
+
+    PRIMARY KEY (StudentID, TeacherID), -- Composite primary key  
+    CONSTRAINT FK_StudentTeacher_Student FOREIGN KEY (StudentID) REFERENCES Student(StudentID) ON DELETE CASCADE,  
+    CONSTRAINT FK_StudentTeacher_Teacher FOREIGN KEY (TeacherID) REFERENCES Teacher(TeacherID) ON DELETE CASCADE
+);
+
+
+
+---------------------------------------------------
+DDL continue
+
+
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY IDENTITY(1,1), -- Auto-incrementing primary key
+    Name NVARCHAR(100) NOT NULL,
+    BirthDate DATE NOT NULL,
+    Email NVARCHAR(150) UNIQUE,
+    PhoneNumber NVARCHAR(20) NULL,
+    EnrolledDate DATETIME DEFAULT GETDATE()
+);
+
+2.1 Add a New Column => Adds Address column to Student.
+ALTER TABLE Student  
+ADD Address NVARCHAR(255) NULL;
+
+
+2.2 Modify Column Data Type => Increases Name length from 100 to 200.
+ALTER TABLE Student  
+ALTER COLUMN Name NVARCHAR(200);
+
+
+2.3 Drop a Column => Removes PhoneNumber column.
+ALTER TABLE Student  
+DROP COLUMN PhoneNumber;
+
+
+2.4 Add a Foreign Key (Example) => Adds a Foreign Key linking Student.ClassID to Class.ClassID (Assuming Class table exists).
+ALTER TABLE Student  
+ADD CONSTRAINT FK_Student_Class FOREIGN KEY (ClassID) REFERENCES Class(ClassID);
+
+
+3.1 Delete Specific Rows => Deletes Student with StudentID = 1, but keeps the table. => Deletes Student with StudentID = 1, but keeps the table.
+DELETE FROM Student WHERE StudentID = 1;
+
+
+3.2 Truncate Table (Delete All Rows) => Removes all student records but keeps table structure.
+TRUNCATE TABLE Student;
+
+
+3.3 Drop Table (Delete Table Permanently) => Deletes the entire Student table permanently.
+DROP TABLE Student;
+
+
+
+
+
+
+
+
+------------------------------------------------------------
+
+
+/// School
+Students
+Teachers
+Classes
+Subjects
+Grades
+
+Subjects => Teachers one - to - many
+Subjects <> Students many-to-many
+Subjects <> Grades  many - to - many (SubjectGrade)
+
+Teachers <> Students many-to-many 
+Teachers <> Classes  many-to-many
+
+Grades <= Students many-to-one
+
+Students <> Classes many-to-many
+
+Subjects
+Teachers
+Grades
+Students
+Classes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// Commerce
+Customers
+Orders
+Products
+Payments
+ShoppingCart
+
+/// SocialApp
+Users
+Posts
+Comments
+Likes
+Followers
+
+
+
+----------------------------------------------------
+
+Relationships: School
+Students → Classes → Many-to-One (A student belongs to one class, but a class has many students)
+
+Teachers → Classes → One-to-Many (A teacher can teach multiple classes, but each class has one main teacher)
+
+Subjects → Classes → Many-to-Many (A class can have many subjects, and a subject can be taught in many classes)
+(Needs a junction table like ClassSubjects)
+
+Grades → Students → Many-to-One (A student can have many grades, but each grade is for one student)
+
+Grades → Subjects → Many-to-One (A subject can have multiple grades, but each grade belongs to one subject)
+
+
+E-Commerce Platform
+Relationships:
+Customers → Orders → One-to-Many (A customer can place multiple orders, but an order belongs to one customer)
+
+Orders → Products → Many-to-Many (An order can have many products, and a product can be in many orders)
+(Needs a junction table like OrderDetails)
+
+Payments → Orders → One-to-One (Each order has one payment, and each payment belongs to one order)
+
+ShoppingCart → Customers → One-to-One (Each customer has one cart, but a cart belongs to one customer)
+
+ShoppingCart → Products → Many-to-Many (A cart can contain multiple products, and a product can be in multiple carts)
+
+
+
+Social Media App
+Relationships:
+Users → Posts → One-to-Many (A user can create multiple posts, but a post belongs to one user)
+
+Posts → Comments → One-to-Many (A post can have many comments, but each comment belongs to one post)
+
+Users → Comments → One-to-Many (A user can write many comments, but a comment belongs to one user)
+
+Users → Followers → Many-to-Many (Self-referencing) (A user can follow many users, and be followed by many users)
+(Needs a junction table like UserFollowers)
+
+Users → Likes → Many-to-Many (A user can like multiple posts, and a post can be liked by multiple users)
+(Needs a junction table like PostLikes)
+
+
+
+
+
+
+
+DML (Data Manipulation Language)
+
+
+
+
+
