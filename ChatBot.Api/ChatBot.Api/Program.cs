@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.Timeouts;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ChatBot.Api
 {
@@ -30,27 +30,81 @@ namespace ChatBot.Api
         }
         static async Task HandleUpdateAsync(ITelegramBotClient bot, Update update, CancellationToken cancellationToken)
         {
-            if (update.Message == null) return;
-            Ids = await GetAllIds();
-            var message = update.Message;
-            var user = message.Chat;
-            Console.WriteLine(user.Id);
-            if (message.Text == "/start")
+            if (update.Type == UpdateType.Message)
             {
-                await SaveUserId();
-                Ids.Add(user.Id);
-                await bot.SendTextMessageAsync(user.Id, "Assalomu alaikum, welcome", cancellationToken : cancellationToken);
-            }
-
-            if (!string.IsNullOrEmpty(message.Text))
-            {
-                var ids = Ids;
-                foreach (var id in ids)
+                Ids = await GetAllIds();
+                var message = update.Message;
+                var user = message.Chat;
+                Console.WriteLine(user.Id);
+                if (message.Text == "/start")
                 {
-                    await bot.SendTextMessageAsync(id, message.Text, cancellationToken: cancellationToken);
+                    await SaveUserId();
+                    Ids.Add(user.Id);
+
+
+
+                    var menu = new ReplyKeyboardMarkup(new[]
+                    {
+                   new KeyboardButton[] { "Option 1", "Option 2" },
+                   new KeyboardButton[] { "Option 3", "Option 4" }
+                })
+
+                    {
+                        ResizeKeyboard = true,
+                        OneTimeKeyboard = true
+                    };
+
+                    //var menu = new ReplyKeyboardMarkup(new[]
+                    //{
+                    //    new []
+                    //    {
+                    //        new KeyboardButton ("Option 1"),
+                    //        new KeyboardButton("Option 2")
+                    //    },
+                    //    new[]
+                    //    {
+                    //        new KeyboardButton("Option 3"),
+                    //        new KeyboardButton("Option 4")
+                    //    }
+
+                    //});    
+
+                    await bot.SendTextMessageAsync(user.Id, "Assalomu alaikum, welcome", replyMarkup: menu);
+                    return;
                 }
+                if (message.Text == "Option 1")
+                {
+                    var inlineMenu = new InlineKeyboardMarkup(new[]
+                    {
+                    new []
+                    {
+                        InlineKeyboardButton.WithCallbackData("Option 1", "option_1"),
+                        InlineKeyboardButton.WithCallbackData("Option 2", "option_2")
+                    },
+                    new []
+                    {
+                        InlineKeyboardButton.WithCallbackData("Option 3", "option_3"),
+                        InlineKeyboardButton.WithCallbackData("Option 4", "option_4")
+                    }
+                });
+                    await bot.SendTextMessageAsync(user.Id, "Assalomu alaikum, welcome", replyMarkup: inlineMenu);
+                }
+
+            }
+            //else if (update.Type == UpdateType.CallbackQuery)
+            //{
+            //    var message = update.CallbackQuery.Message;
+            //    var id = update.CallbackQuery.From.Id;
+            //    await bot.SendTextMessageAsync(id, $"Your option is {message}");
+            //}
+            else if (update.Type == UpdateType.CallbackQuery)
+            {
+                var message = update.CallbackQuery.Message;
+                var id = update.CallbackQuery.From.Id;
+                await bot.SendTextMessageAsync(id, $"Your option is {update.CallbackQuery.Message}");
             }
         }
+
         static async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
 

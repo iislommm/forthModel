@@ -1,0 +1,6 @@
+@RegistationBot.Server_HostAddress = http://localhost:5144
+
+GET {{RegistationBot.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
